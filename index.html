@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Augury & Verse | 塔罗占卜</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 加载动画 -->
+    <div class="loading-screen" id="loading">
+        <div class="loading-mandala">
+            <div class="loading-ring"></div>
+            <div class="loading-icon">✦</div>
+        </div>
+        <p class="loading-text" data-zh="命运纺锤转动中..." data-en="The spindle of fate turns...">命运纺锤转动中...</p>
+    </div>
+
+    <!-- 背景粒子 -->
+    <div class="particles" id="particles"></div>
+
+    <!-- 语言切换 -->
+    <div class="lang-switch">
+        <button onclick="setLang('zh')" class="lang-btn active" id="btn-zh">中文</button>
+        <button onclick="setLang('en')" class="lang-btn" id="btn-en">English</button>
+    </div>
+
+    <!-- 主标题 -->
+    <header class="main-header">
+        <div class="header-banner">
+            <div class="banner-side left">❧ ❦ ❧</div>
+            <div class="banner-center">✦</div>
+            <div class="banner-side right">❧ ❦ ❧</div>
+        </div>
+        <div class="ornament top-ornament">❦</div>
+        <h1 class="site-title" data-zh="命运" data-en="Fate">命运</h1>
+        <p class="subtitle" data-zh="获取今日启示" data-en="Draw Today's Augury">获取今日启示</p>
+        <div class="ornament bottom-ornament">❦</div>
+    </header>
+
+    <!-- 每日运势入口 -->
+    <section class="daily-section">
+        <div class="card-frame daily-frame">
+            <div class="quote-mark open">“</div>
+            <h2 data-zh="月相潮讯" data-en="Celestial Tidings">月相潮讯</h2>
+            <div class="moon-phase" id="moon-phase">🌑</div>
+            <p class="daily-date" id="daily-date">2026年5月15日</p>
+            <button class="mucha-btn" onclick="drawDaily()" data-zh="获取今日启示" data-en="Draw Daily Fortune">获取今日启示</button>
+            <div class="daily-result hidden" id="daily-result"></div>
+            <div class="quote-mark close">”</div>
+        </div>
+    </section>
+
+    <!-- 三牌阵占卜 -->
+    <section class="reading-section">
+        <h2 class="section-title" data-zh="时光之阵" data-en="The Array of Hours">时光之阵</h2>
+        <p class="section-desc" data-zh="过去 · 现在 · 未来" data-en="Past · Present · Future">过去 · 现在 · 未来</p>
+        
+        <div class="spread-wrapper">
+            <div class="spread-pillar left">❧</div>
+            
+            <div class="spread-container" id="spread">
+                <!-- 过去 -->
+                <div class="card-slot" id="slot-past" onclick="revealCard('past')">
+                    <div class="card-back">
+                        <div class="card-pattern">✦</div>
+                        <div class="card-back-decor"></div>
+                    </div>
+                    <div class="card-front hidden">
+                        <div class="card-art-container" id="art-past"></div>
+                        <div class="card-icon" id="icon-past">☽</div>
+                        <div class="card-name" id="name-past"></div>
+                        <div class="card-meaning" id="meaning-past"></div>
+                    </div>
+                    <p class="slot-label" data-zh="过去" data-en="The Past">过去</p>
+                </div>
+
+                <!-- 现在 -->
+                <div class="card-slot" id="slot-present" onclick="revealCard('present')">
+                    <div class="card-back">
+                        <div class="card-pattern">✦</div>
+                        <div class="card-back-lines"></div>
+                    </div>
+                    <div class="card-front hidden">
+                        <div class="card-art-container" id="art-present"></div>
+                        <div class="card-icon" id="icon-present">☉</div>
+                        <div class="card-name" id="name-present"></div>
+                        <div class="card-meaning" id="meaning-present"></div>
+                    </div>
+                    <p class="slot-label" data-zh="现在" data-en="The Present">现在</p>
+                </div>
+
+                <!-- 未来 -->
+                <div class="card-slot" id="slot-future" onclick="revealCard('future')">
+                    <div class="card-back">
+                        <div class="card-pattern">✦</div>
+                        <div class="card-back-lines"></div>
+                    </div>
+                    <div class="card-front hidden">
+                        <div class="card-art-container" id="art-future"></div>
+                        <div class="card-icon" id="icon-future">☆</div>
+                        <div class="card-name" id="name-future"></div>
+                        <div class="card-meaning" id="meaning-future"></div>
+                    </div>
+                    <p class="slot-label" data-zh="未来" data-en="The Future">未来</p>
+                </div>
+            </div>
+            
+            <div class="spread-pillar right">❧</div>
+        </div>
+
+        <button class="mucha-btn shuffle-btn" onclick="shuffleCards()" data-zh="洗牌" data-en="Shuffle the Deck">洗牌</button>
+    </section>
+
+    <!-- 牌义指南 -->
+    <section class="guide-section">
+        <div class="guide-toggle-bar" onclick="toggleGuide()">
+            <div class="guide-ornament left">❧</div>
+            <h3 data-zh="大阿尔卡纳牌义指南" data-en="Major Arcana Guide">大阿尔卡纳牌义指南</h3>
+            <div class="guide-icon" id="guide-icon">+</div>
+            <div class="guide-ornament right">❧</div>
+        </div>
+        <div class="guide-panel hidden" id="guide-panel">
+            <div class="guide-grid" id="guide-grid"></div>
+            <div class="guide-detail hidden" id="guide-detail"></div> 
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="footer-ornament top">❧</div>
+        <div class="footer-banner">
+            <span>✦</span>
+            <span>❦</span>
+            <span>✦</span>
+        </div>
+        <p class="podcast-link" data-zh="收听我们的传讯" data-en="Listen to Our Message">收听我们的传讯</p>
+        <div class="qr-placeholder" data-zh="[播客二维码]" data-en="[Podcast QR]">[播客二维码]</div>
+        <div class="footer-links">
+            <a href="#" data-zh="关于我们" data-en="About">关于我们</a>
+            <span class="link-sep">·</span>
+            <a href="#" data-zh="联系方式" data-en="Contact">联系方式</a>
+            <span class="link-sep">·</span>
+            <a href="#" data-zh="隐私政策" data-en="Privacy">隐私政策</a>
+        </div>
+        <div class="footer-ornament bottom">❦</div>
+        <p class="copyright">© 2026 Augury & Verse</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
