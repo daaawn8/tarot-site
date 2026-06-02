@@ -118,25 +118,26 @@ body {
 
 .particle {
     position: absolute;
-    color: var(--gold);
-    opacity: 0.15;
+    color: var(--gold-light);
+    opacity: 0.35;
     animation: float-particle linear infinite;
-    font-size: 1rem;
+    font-size: 1.6rem;
+    text-shadow: 0 0 12px rgba(232, 213, 163, 0.55);
 }
 
 @keyframes float-particle {
     0% {
-        transform: translateY(100vh) rotate(0deg);
+        transform: translateY(100vh) rotate(0deg) scale(0.8);
         opacity: 0;
     }
     10% {
-        opacity: 0.15;
+        opacity: 0.35;
     }
     90% {
-        opacity: 0.15;
+        opacity: 0.35;
     }
     100% {
-        transform: translateY(-10vh) rotate(360deg);
+        transform: translateY(-10vh) rotate(360deg) scale(1.25);
         opacity: 0;
     }
 }
@@ -403,6 +404,34 @@ body::before {
     left: -100%;
 }
 
+/* ===== 牌阵入口 ===== */
+.spread-menu-section {
+    max-width: 900px;
+    margin: 20px auto 40px;
+    padding: 0 20px;
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.spread-menu-frame {
+    padding: 32px 28px;
+}
+
+.spread-menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.spread-menu-btn {
+    width: 100%;
+    min-height: 72px;
+    margin: 0;
+    line-height: 1.6;
+}
+
 /* ===== 三牌阵区域 ===== */
 .reading-section {
     padding: 40px 20px;
@@ -597,12 +626,19 @@ body::before {
 /* ===== 穆夏曼陀罗图案 ===== */
 .card-art-container {
     width: 100%;
-    height: 120px;
+    height: 140px;
     position: relative;
     margin-bottom: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.card-art-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
 }
 
 .mandala-art {
@@ -673,9 +709,21 @@ body::before {
 }
 
 .card-icon {
-    font-size: 1.8rem;
+    width: 36px;
+    height: 36px;
     color: var(--crimson);
     margin-bottom: 8px;
+}
+
+.card-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.card-reversed .card-icon img,
+.result-card.is-reversed .result-icon img {
+    transform: rotate(180deg);
 }
 
 .card-name {
@@ -733,6 +781,34 @@ body::before {
 
 .daily-result .result-card {
     animation: fadeIn 0.8s ease;
+}
+
+.result-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 15px;
+    animation: float 3s ease-in-out infinite;
+}
+
+.result-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.4s ease;
+}
+
+.result-card-title {
+    font-family: 'Cinzel', 'Noto Serif SC', serif;
+    color: var(--crimson);
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+}
+
+.result-card-text {
+    font-style: italic;
+    line-height: 1.8;
+    color: var(--ink);
 }
 
 @keyframes fadeIn {
@@ -814,7 +890,7 @@ body::before {
 }
 
 .guide-panel.open {
-    max-height: 2000px;
+    max-height: 6000px;
     padding: 30px;
 }
 
@@ -841,9 +917,32 @@ body::before {
 }
 
 .guide-item-icon {
-    font-size: 1.5rem;
     width: 40px;
-    text-align: center;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.guide-item-icon img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.guide-detail-icon {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+}
+
+.guide-detail-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .guide-item-info {

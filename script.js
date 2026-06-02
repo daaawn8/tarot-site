@@ -1,6 +1,6 @@
 //22张大阿尔卡纳
 
-const tarotDeck = [
+const majorArcana = [
     {
         id: 0,
         nameZh: "愚者",
@@ -223,6 +223,172 @@ const tarotDeck = [
     }
 ];
 
+// ===== 资源路径与牌组配置 =====
+const suitMeta = {
+    swords: {
+        nameZh: '宝剑',
+        nameEn: 'Swords',
+        iconSrc: 'assets/icons/suits/swords.svg',
+        elementZh: '风',
+        elementEn: 'Air',
+        themeZh: '思想、沟通、判断',
+        themeEn: 'thought, communication, judgement'
+    },
+    cups: {
+        nameZh: '圣杯',
+        nameEn: 'Cups',
+        iconSrc: 'assets/icons/suits/cups.svg',
+        elementZh: '水',
+        elementEn: 'Water',
+        themeZh: '情感、关系、直觉',
+        themeEn: 'emotion, relationship, intuition'
+    },
+    pentacles: {
+        nameZh: '星币',
+        nameEn: 'Pentacles',
+        iconSrc: 'assets/icons/suits/pentacles.svg',
+        elementZh: '土',
+        elementEn: 'Earth',
+        themeZh: '现实、资源、身体',
+        themeEn: 'reality, resources, the body'
+    },
+    wands: {
+        nameZh: '权杖',
+        nameEn: 'Wands',
+        iconSrc: 'assets/icons/suits/wands.svg',
+        elementZh: '火',
+        elementEn: 'Fire',
+        themeZh: '行动、热情、创造',
+        themeEn: 'action, passion, creation'
+    }
+};
+
+const minorRanks = [
+    { rank: 'ace', nameZh: '王牌', nameEn: 'Ace', noteZh: '一束初生的力量', noteEn: 'a first spark of power' },
+    { rank: 'two', nameZh: '二', nameEn: 'Two', noteZh: '选择与平衡', noteEn: 'choice and balance' },
+    { rank: 'three', nameZh: '三', nameEn: 'Three', noteZh: '生长与回应', noteEn: 'growth and response' },
+    { rank: 'four', nameZh: '四', nameEn: 'Four', noteZh: '结构与停顿', noteEn: 'structure and pause' },
+    { rank: 'five', nameZh: '五', nameEn: 'Five', noteZh: '摩擦与试炼', noteEn: 'friction and trial' },
+    { rank: 'six', nameZh: '六', nameEn: 'Six', noteZh: '修复与流动', noteEn: 'repair and movement' },
+    { rank: 'seven', nameZh: '七', nameEn: 'Seven', noteZh: '策略与考验', noteEn: 'strategy and examination' },
+    { rank: 'eight', nameZh: '八', nameEn: 'Eight', noteZh: '推进与练习', noteEn: 'momentum and practice' },
+    { rank: 'nine', nameZh: '九', nameEn: 'Nine', noteZh: '临界与积累', noteEn: 'threshold and accumulation' },
+    { rank: 'ten', nameZh: '十', nameEn: 'Ten', noteZh: '完成与转化', noteEn: 'completion and transformation' },
+    { rank: 'page', nameZh: '侍从', nameEn: 'Page', noteZh: '消息与学习', noteEn: 'message and apprenticeship' },
+    { rank: 'knight', nameZh: '骑士', nameEn: 'Knight', noteZh: '追逐与执行', noteEn: 'pursuit and execution' },
+    { rank: 'queen', nameZh: '王后', nameEn: 'Queen', noteZh: '承载与滋养', noteEn: 'containment and nourishment' },
+    { rank: 'king', nameZh: '国王', nameEn: 'King', noteZh: '掌控与责任', noteEn: 'command and responsibility' }
+];
+
+function toAssetSlug(name) {
+    return name.toLowerCase().replace(/^the\s+/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function normalizeMajorArcana(cards) {
+    return cards.map(card => {
+        const slug = toAssetSlug(card.nameEn);
+        return {
+            ...card,
+            id: `major-${String(card.id).padStart(2, '0')}`,
+            legacyId: card.id,
+            arcana: 'major',
+            suit: null,
+            rank: card.id,
+            iconSrc: `assets/icons/major/${slug}.svg`,
+            imageSrc: `assets/cards/major/${slug}.png`,
+            meanings: {
+                upright: { zh: card.meaningZh, en: card.meaningEn },
+                reversed: {
+                    zh: `逆位提醒：${card.meaningZh}`,
+                    en: `Reversed: ${card.meaningEn}`
+                }
+            },
+            daily: {
+                upright: { zh: card.dailyZh, en: card.dailyEn },
+                reversed: {
+                    zh: `今日逆位提醒：先放慢脚步。${card.dailyZh}`,
+                    en: `Reversed today: slow your pace first. ${card.dailyEn}`
+                }
+            }
+        };
+    });
+}
+
+function createMinorArcana() {
+    return Object.entries(suitMeta).flatMap(([suit, meta]) => minorRanks.map(rank => ({
+        id: `${suit}-${rank.rank}`,
+        legacyId: `${suit}-${rank.rank}`,
+        arcana: 'minor',
+        suit,
+        rank: rank.rank,
+        nameZh: `${meta.nameZh}${rank.nameZh}`,
+        nameEn: `${rank.nameEn} of ${meta.nameEn}`,
+        iconSrc: meta.iconSrc,
+        imageSrc: `assets/cards/minor/${suit}-${rank.rank}.png`,
+        meanings: {
+            upright: {
+                zh: `${meta.nameZh}${rank.nameZh}指向${meta.themeZh}中的${rank.noteZh}。它提醒你把抽象的感受落到具体选择里。`,
+                en: `${rank.nameEn} of ${meta.nameEn} points to ${rank.noteEn} within ${meta.themeEn}. It asks you to bring vague impressions into a concrete choice.`
+            },
+            reversed: {
+                zh: `${meta.nameZh}${rank.nameZh}逆位时，${rank.noteZh}可能被拖延、误读或过度消耗。先整理节奏，再继续推进。`,
+                en: `Reversed, ${rank.nameEn} of ${meta.nameEn} suggests ${rank.noteEn} may be delayed, misread, or overextended. Restore the rhythm before moving on.`
+            }
+        },
+        daily: {
+            upright: {
+                zh: `今日留意${meta.themeZh}。${rank.noteZh}正在给你一个温和但明确的提示。`,
+                en: `Today, notice ${meta.themeEn}. ${rank.noteEn} is offering a gentle but precise signal.`
+            },
+            reversed: {
+                zh: `今日逆位提醒：关于${meta.themeZh}，不要急着证明什么。先把能量收回自己手里。`,
+                en: `Reversed today: around ${meta.themeEn}, do not rush to prove anything. Gather your energy back into your own hands.`
+            }
+        }
+    })));
+}
+
+const tarotDeck = [
+    ...normalizeMajorArcana(majorArcana),
+    ...createMinorArcana()
+];
+
+function getCardById(id) {
+    return tarotDeck.find(card => String(card.id) === String(id) || String(card.legacyId) === String(id));
+}
+
+function getCardIconSrc(card) {
+    if (card.iconSrc) return card.iconSrc;
+    if (card.suit && suitMeta[card.suit]) return suitMeta[card.suit].iconSrc;
+    return 'assets/icons/default.svg';
+}
+
+function getLocalizedName(card) {
+    return currentLang === 'zh' ? card.nameZh : card.nameEn;
+}
+
+function getOrientationLabel(orientation) {
+    if (currentLang === 'zh') return orientation === 'reversed' ? '逆位' : '正位';
+    return orientation === 'reversed' ? 'Reversed' : 'Upright';
+}
+
+function getCardMeaning(card, orientation = 'upright') {
+    if (card.meanings) return card.meanings[orientation][currentLang];
+    return currentLang === 'zh' ? card.meaningZh : card.meaningEn;
+}
+
+function getCardDaily(card, orientation = 'upright') {
+    if (card.daily) return card.daily[orientation][currentLang];
+    return currentLang === 'zh' ? card.dailyZh : card.dailyEn;
+}
+
+function drawRandomCard(deck = tarotDeck) {
+    return {
+        card: deck[Math.floor(Math.random() * deck.length)],
+        orientation: Math.random() < 0.5 ? 'upright' : 'reversed'
+    };
+}
+
 // ===== 月相数据 =====
 const moonPhases = [
     { icon: "🌑", name: "新月", en: "New Moon" },
@@ -240,7 +406,7 @@ let currentLang = 'zh';
 let shuffledCards = [];
 let revealedSlots = { past: false, present: false, future: false };
 let dailyDrawnToday = false;
-let todayCard = null;
+let todayCard = null; // 保存今日抽到的 { card, orientation }
 
 // ===== 初始化 =====
 document.addEventListener('DOMContentLoaded', () => {
@@ -273,14 +439,14 @@ function initParticles() {
     const container = document.getElementById('particles');
     const symbols = ['✦', '✧', '❦', '❧', '☽', '☉', '☆', '✶'];
     
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 36; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
         particle.textContent = symbols[Math.floor(Math.random() * symbols.length)];
         particle.style.left = Math.random() * 100 + '%';
-        particle.style.animationDuration = (15 + Math.random() * 20) + 's';
+        particle.style.animationDuration = (10 + Math.random() * 14) + 's';
         particle.style.animationDelay = Math.random() * 15 + 's';
-        particle.style.fontSize = (0.8 + Math.random() * 1.2) + 'rem';
+        particle.style.fontSize = (1.2 + Math.random() * 1.8) + 'rem';
         container.appendChild(particle);
     }
 }
@@ -320,8 +486,14 @@ function checkDailyStatus() {
         const today = new Date().toDateString();
         
         if (data.date === today) {
+            const savedCard = getCardById(data.cardId);
+            if (!savedCard) return;
+
             dailyDrawnToday = true;
-            todayCard = tarotDeck[data.cardId];
+            todayCard = {
+                card: savedCard,
+                orientation: data.orientation || 'upright'
+            };
             
             // 显示已抽取状态
             const btn = document.querySelector('.daily-frame .mucha-btn');
@@ -367,9 +539,9 @@ function updateExistingResults() {
     
     ['past', 'present', 'future'].forEach(slot => {
         if (revealedSlots[slot]) {
-            const cardId = parseInt(document.getElementById(`slot-${slot}`).dataset.cardId);
-            const card = tarotDeck[cardId];
-            updateCardDisplay(slot, card);
+            const slotEl = document.getElementById(`slot-${slot}`);
+            const card = getCardById(slotEl.dataset.cardId);
+            updateCardDisplay(slot, card, slotEl.dataset.orientation || 'upright');
         }
     });
       const summary = document.getElementById('spread-summary');
@@ -383,14 +555,15 @@ function updateExistingResults() {
 function drawDaily() {
     if (dailyDrawnToday) return;
     
-    const randomCard = tarotDeck[Math.floor(Math.random() * tarotDeck.length)];
-    todayCard = randomCard;
+    const dailyDraw = drawRandomCard();
+    todayCard = dailyDraw;
     dailyDrawnToday = true;
     
     // 保存到本地存储
     localStorage.setItem('dailyTarot', JSON.stringify({
         date: new Date().toDateString(),
-        cardId: randomCard.id
+        cardId: dailyDraw.card.id,
+        orientation: dailyDraw.orientation
     }));
     
     // 禁用按钮
@@ -398,25 +571,44 @@ function drawDaily() {
     btn.disabled = true;
     btn.textContent = currentLang === 'zh' ? '今日已抽取' : 'Already Drawn Today';
     
-    showDailyResult(randomCard, true);
+    showDailyResult(dailyDraw, true);
 }
 
 // ===== 显示每日运势结果 =====
-function showDailyResult(card, animate) {
+function showDailyResult(draw, animate) {
     const resultDiv = document.getElementById('daily-result');
+    const card = draw.card || draw;
+    const orientation = draw.orientation || 'upright';
     resultDiv.classList.remove('hidden');
     
     resultDiv.innerHTML = `
-        <div class="result-card" style="${animate ? 'animation: fadeIn 0.8s ease;' : ''}">
-            <div style="font-size: 2.5rem; margin-bottom: 15px; animation: float 3s ease-in-out infinite;">${card.icon}</div>
-            <div style="font-family: 'Cinzel', 'Noto Serif SC', serif; color: var(--crimson); font-size: 1.3rem; margin-bottom: 15px; letter-spacing: 2px;">
-                ${currentLang === 'zh' ? card.nameZh : card.nameEn}
+        <div class="result-card ${orientation === 'reversed' ? 'is-reversed' : ''}" style="${animate ? 'animation: fadeIn 0.8s ease;' : ''}">
+            <div class="result-icon">
+                <img src="${getCardIconSrc(card)}" alt="${getLocalizedName(card)}">
             </div>
-            <div style="font-style: italic; line-height: 1.8; color: var(--ink);">
-                ${currentLang === 'zh' ? card.dailyZh : card.dailyEn}
+            <div class="result-card-title">
+                ${getLocalizedName(card)} · ${getOrientationLabel(orientation)}
+            </div>
+            <div class="result-card-text">
+                ${getCardDaily(card, orientation)}
             </div>
         </div>
     `;
+}
+
+// ===== 显示牌面图片；没有上传图片时回退为曼陀罗图案 =====
+function renderCardArt(card, containerId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+
+    if (card.imageSrc) {
+        container.innerHTML = `
+            <img class="card-art-img" src="${card.imageSrc}" alt="${getLocalizedName(card)}" onerror="this.remove(); generateMandala('${card.id}', '${containerId}');">
+        `;
+        return;
+    }
+
+    generateMandala(card.id, containerId);
 }
 
 // ===== 生成穆夏曼陀罗图案 =====
@@ -428,7 +620,7 @@ function generateMandala(cardId, containerId) {
     mandala.className = 'mandala-art';
     
     // 基于cardId生成独特图案
-    const seed = cardId * 137; // 伪随机种子
+    const seed = String(cardId).split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) * 137; // 伪随机种子
     const ringCount = 3 + (seed % 3);
     const petalCount = 6 + (seed % 8);
     const rotation = (seed % 360);
@@ -491,7 +683,10 @@ function shuffleCards() {
     shuffledCards = [];
     for (let i = 0; i < 3; i++) {
         const index = Math.floor(Math.random() * deck.length);
-        shuffledCards.push(deck[index]);
+        shuffledCards.push({
+            card: deck[index],
+            orientation: Math.random() < 0.5 ? 'upright' : 'reversed'
+        });
         deck.splice(index, 1);
     }
     
@@ -499,7 +694,8 @@ function shuffleCards() {
     slots.forEach((slot, index) => {
         const slotEl = document.getElementById(`slot-${slot}`);
         slotEl.classList.add('shuffling');
-        slotEl.dataset.cardId = shuffledCards[index].id;
+        slotEl.dataset.cardId = shuffledCards[index].card.id;
+        slotEl.dataset.orientation = shuffledCards[index].orientation;
         
         setTimeout(() => {
             slotEl.classList.remove('shuffling');
@@ -519,14 +715,15 @@ function revealCard(slot) {
     if (revealedSlots[slot]) return;
     
     const slotEl = document.getElementById(`slot-${slot}`);
-    const cardId = parseInt(slotEl.dataset.cardId);
-    const card = tarotDeck[cardId];
+    const cardId = slotEl.dataset.cardId;
+    const orientation = slotEl.dataset.orientation || 'upright';
+    const card = getCardById(cardId);
     
-    // 生成曼陀罗图案
-    generateMandala(cardId, `art-${slot}`);
+    // 优先显示你上传的牌面图片；没有图片时回退为曼陀罗图案
+    renderCardArt(card, `art-${slot}`);
     
     // 更新牌面内容
-    updateCardDisplay(slot, card);
+    updateCardDisplay(slot, card, orientation);
     
     // 翻转动画
     slotEl.classList.add('flipped');
@@ -540,10 +737,14 @@ function revealCard(slot) {
 }
 
 // ===== 更新牌面显示 =====
-function updateCardDisplay(slot, card) {
-    document.getElementById(`icon-${slot}`).textContent = card.icon;
-    document.getElementById(`name-${slot}`).textContent = currentLang === 'zh' ? card.nameZh : card.nameEn;
-    document.getElementById(`meaning-${slot}`).textContent = currentLang === 'zh' ? card.meaningZh : card.meaningEn;
+function updateCardDisplay(slot, card, orientation = 'upright') {
+    const iconEl = document.getElementById(`icon-${slot}`);
+    const slotEl = document.getElementById(`slot-${slot}`);
+
+    iconEl.innerHTML = `<img src="${getCardIconSrc(card)}" alt="${getLocalizedName(card)}">`;
+    slotEl.classList.toggle('card-reversed', orientation === 'reversed');
+    document.getElementById(`name-${slot}`).textContent = `${getLocalizedName(card)} · ${getOrientationLabel(orientation)}`;
+    document.getElementById(`meaning-${slot}`).textContent = getCardMeaning(card, orientation);
 }
 
 // ===== 显示牌阵总结 =====
@@ -568,8 +769,11 @@ function showSpreadSummary() {
     `;
     
     const cards = ['past', 'present', 'future'].map(slot => {
-        const cardId = parseInt(document.getElementById(`slot-${slot}`).dataset.cardId);
-        return tarotDeck[cardId];
+        const slotEl = document.getElementById(`slot-${slot}`);
+        return {
+            card: getCardById(slotEl.dataset.cardId),
+            orientation: slotEl.dataset.orientation || 'upright'
+        };
     });
     
     const title = currentLang === 'zh' ? '时光之阵解读' : 'The Array of Hours';
@@ -584,12 +788,12 @@ function showSpreadSummary() {
         </div>
         <div style="line-height: 2; color: var(--ink);">
             ${currentLang === 'zh' 
-                ? `<p><strong>${cards[0].nameZh}</strong> 从身后推动你——${cards[0].meaningZh}</p>
-                   <p><strong>${cards[1].nameZh}</strong> 正与你并肩——${cards[1].meaningZh}</p>
-                   <p><strong>${cards[2].nameZh}</strong> 在前方等候——${cards[2].meaningZh}</p>`
-                : `<p><strong>${cards[0].nameEn}</strong> pushes from behind—${cards[0].meaningEn}</p>
-                   <p><strong>${cards[1].nameEn}</strong> walks beside you—${cards[1].meaningEn}</p>
-                   <p><strong>${cards[2].nameEn}</strong> awaits ahead—${cards[2].meaningEn}</p>`
+                ? `<p><strong>${cards[0].card.nameZh} · ${getOrientationLabel(cards[0].orientation)}</strong> 从身后推动你——${getCardMeaning(cards[0].card, cards[0].orientation)}</p>
+                   <p><strong>${cards[1].card.nameZh} · ${getOrientationLabel(cards[1].orientation)}</strong> 正与你并肩——${getCardMeaning(cards[1].card, cards[1].orientation)}</p>
+                   <p><strong>${cards[2].card.nameZh} · ${getOrientationLabel(cards[2].orientation)}</strong> 在前方等候——${getCardMeaning(cards[2].card, cards[2].orientation)}</p>`
+                : `<p><strong>${cards[0].card.nameEn} · ${getOrientationLabel(cards[0].orientation)}</strong> pushes from behind—${getCardMeaning(cards[0].card, cards[0].orientation)}</p>
+                   <p><strong>${cards[1].card.nameEn} · ${getOrientationLabel(cards[1].orientation)}</strong> walks beside you—${getCardMeaning(cards[1].card, cards[1].orientation)}</p>
+                   <p><strong>${cards[2].card.nameEn} · ${getOrientationLabel(cards[2].orientation)}</strong> awaits ahead—${getCardMeaning(cards[2].card, cards[2].orientation)}</p>`
             }
         </div>
         <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--gold); font-style: italic; color: var(--ink-light); font-size: 0.9rem;">
@@ -609,8 +813,9 @@ function resetSpread() {
     
     ['past', 'present', 'future'].forEach(slot => {
         const slotEl = document.getElementById(`slot-${slot}`);
-        slotEl.classList.remove('flipped');
+        slotEl.classList.remove('flipped', 'card-reversed');
         slotEl.removeAttribute('data-card-id');
+        slotEl.removeAttribute('data-orientation');
         
         document.getElementById(`art-${slot}`).innerHTML = '';
         document.getElementById(`icon-${slot}`).textContent = slot === 'past' ? '☽' : slot === 'present' ? '☉' : '☆';
@@ -622,6 +827,15 @@ function resetSpread() {
     if (summary) summary.remove();
 }
 
+// ===== 牌阵入口 =====
+function openSpread(spreadId) {
+    if (spreadId !== 'three-card') return;
+
+    const spread = document.getElementById('three-card-spread');
+    spread.classList.remove('hidden');
+    spread.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 // ===== 牌义指南 =====
 function initGuide() {
     const grid = document.getElementById('guide-grid');
@@ -630,7 +844,7 @@ function initGuide() {
         const item = document.createElement('div');
         item.className = 'guide-item';
         item.innerHTML = `
-            <div class="guide-item-icon">${card.icon}</div>
+            <div class="guide-item-icon"><img src="${getCardIconSrc(card)}" alt="${getLocalizedName(card)}"></div>
             <div class="guide-item-info">
                 <div class="guide-item-name" data-zh="${card.nameZh}" data-en="${card.nameEn}">${card.nameZh}</div>
                 <div class="guide-item-en">${card.nameEn}</div>
@@ -656,18 +870,20 @@ function showCardDetail(card) {
     const detail = document.getElementById('guide-detail');
     const title = currentLang === 'zh' ? card.nameZh : card.nameEn;
     const subTitle = currentLang === 'zh' ? card.nameEn : card.nameZh;
-    const meaning = currentLang === 'zh' ? card.meaningZh : card.meaningEn;
+    const uprightMeaning = getCardMeaning(card, 'upright');
+    const reversedMeaning = getCardMeaning(card, 'reversed');
     
     detail.innerHTML = `
         <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
-            <div style="font-size: 3rem;">${card.icon}</div>
+            <div class="guide-detail-icon"><img src="${getCardIconSrc(card)}" alt="${title}"></div>
             <div>
                 <div style="font-family: 'Cinzel', 'Noto Serif SC', serif; color: var(--crimson); font-size: 1.4rem; letter-spacing: 2px; margin-bottom: 5px;">${title}</div>
                 <div style="font-family: 'Cormorant Garamond', serif; color: var(--ink-light); font-style: italic; font-size: 1rem;">${subTitle}</div>
             </div>
         </div>
         <div style="font-style: italic; line-height: 1.8; color: var(--ink); padding: 20px 0; border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); margin-bottom: 20px;">
-            ${meaning}
+            <strong>${currentLang === 'zh' ? '正位' : 'Upright'}：</strong>${uprightMeaning}<br><br>
+            <strong>${currentLang === 'zh' ? '逆位' : 'Reversed'}：</strong>${reversedMeaning}
         </div>
         <button onclick="closeGuideDetail()" class="mucha-btn" style="padding: 10px 24px; font-size: 0.85rem; margin: 0;">
             ${currentLang === 'zh' ? '收起详情' : 'Close Detail'}
