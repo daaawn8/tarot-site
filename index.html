@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Augury & Verse</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/svg+xml" href="assets/favicon/favicon.svg">
+    <link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.svg">
 </head>
 <body>
     <!-- 加载动画 -->
@@ -52,8 +53,21 @@
         </div>
     </section>
 
+    <!-- 牌阵选择入口 -->
+    <section class="spread-menu-section">
+        <div class="card-frame spread-menu-frame">
+            <h2 class="section-title" data-zh="选择牌阵" data-en="Choose a Spread">选择牌阵</h2>
+            <p class="section-desc" data-zh="让问题先拥有形状，再向牌面寻求回声" data-en="Give your question a shape before seeking its echo in the cards">让问题先拥有形状，再向牌面寻求回声</p>
+            <div class="spread-menu-grid">
+                <button class="mucha-btn spread-menu-btn" onclick="openSpread('three-card')" data-zh="开启时光之阵" data-en="Open the Array of Hours">开启时光之阵</button>
+                <button class="mucha-btn spread-menu-btn" disabled data-zh="关系之阵 · 即将开放" data-en="Relationship Spread · Coming Soon">关系之阵 · 即将开放</button>
+                <button class="mucha-btn spread-menu-btn" disabled data-zh="事业之阵 · 即将开放" data-en="Career Spread · Coming Soon">事业之阵 · 即将开放</button>
+            </div>
+        </div>
+    </section>
+
     <!-- 三牌阵占卜 -->
-    <section class="reading-section">
+    <section class="reading-section hidden" id="three-card-spread">
         <h2 class="section-title" data-zh="时光之阵" data-en="The Array of Hours">时光之阵</h2>
         <p class="section-desc" data-zh="过去 · 现在 · 未来" data-en="Past · Present · Future">过去 · 现在 · 未来</p>
         
@@ -67,7 +81,7 @@
                         <div class="card-pattern">✦</div>
                         <div class="card-back-decor"></div>
                     </div>
-                    <div class="card-front hidden">
+                    <div class="card-front">
                         <div class="card-art-container" id="art-past"></div>
                         <div class="card-icon" id="icon-past">☽</div>
                         <div class="card-name" id="name-past"></div>
@@ -82,7 +96,7 @@
                         <div class="card-pattern">✦</div>
                         <div class="card-back-lines"></div>
                     </div>
-                    <div class="card-front hidden">
+                    <div class="card-front">
                         <div class="card-art-container" id="art-present"></div>
                         <div class="card-icon" id="icon-present">☉</div>
                         <div class="card-name" id="name-present"></div>
@@ -97,7 +111,7 @@
                         <div class="card-pattern">✦</div>
                         <div class="card-back-lines"></div>
                     </div>
-                    <div class="card-front hidden">
+                    <div class="card-front">
                         <div class="card-art-container" id="art-future"></div>
                         <div class="card-icon" id="icon-future">☆</div>
                         <div class="card-name" id="name-future"></div>
@@ -117,7 +131,7 @@
     <section class="guide-section">
         <div class="guide-toggle-bar" onclick="toggleGuide()">
             <div class="guide-ornament left">❧</div>
-            <h3 data-zh="大阿尔卡纳牌义指南" data-en="Major Arcana Guide">大阿尔卡纳牌义指南</h3>
+            <h3 data-zh="78张塔罗牌义图书馆" data-en="78-Card Tarot Library">78张塔罗牌义图书馆</h3>
             <div class="guide-icon" id="guide-icon">+</div>
             <div class="guide-ornament right">❧</div>
         </div>
